@@ -20,6 +20,12 @@ For JSON Schema validation support:
 pip install "llmcalibre[schema]"
 ```
 
+For offline semantic similarity support:
+
+```bash
+pip install "llmcalibre[nlp]"
+```
+
 ## Quick Example
 
 ```python
@@ -30,6 +36,7 @@ from llmcalibre import (
     JsonSchemaChecker,
     LengthConstraint,
     RegexChecker,
+    SemanticSimilarity,
 )
 
 schema = {
@@ -55,6 +62,13 @@ summary = pipeline.summary(results)
 
 print(results)
 print(summary)
+
+similarity = SemanticSimilarity(threshold=0.7)
+semantic_result = similarity.evaluate(
+    "Paris is the capital of France.",
+    reference="France's capital city is Paris.",
+)
+print(semantic_result)
 ```
 
 ## CLI Usage
