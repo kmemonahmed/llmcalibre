@@ -1,98 +1,125 @@
 # llmcalibre
 
-llmcalibre is an offline-first, framework-agnostic foundation for evaluating LLM outputs. It starts with small, deterministic evaluators that can run anywhere without runtime dependencies.
+llmcalibre is an offline-first, framework-agnostic library for evaluating LLM
+outputs. It starts with deterministic local checks, then lets you opt into
+heavier NLP metrics or OpenAI-compatible judge models only when you need them.
 
-## Install
+This is an alpha release: APIs are intentionally small, but may still evolve.
+
+## Installation
+
+Base install, with no runtime dependencies:
 
 ```bash
 pip install llmcalibre
 ```
 
-For local development:
+Install from a local checkout for development:
 
 ```bash
 pip install -e ".[dev]"
 ```
 
-For JSON Schema validation support:
+Optional extras:
 
 ```bash
 pip install "llmcalibre[schema]"
-```
-
-For offline semantic similarity support:
-
-```bash
 pip install "llmcalibre[nlp]"
-```
-
-For OpenAI-compatible judge support:
-
-```bash
 pip install "llmcalibre[judge]"
 ```
 
-## Quick Example
+Extras can be combined:
+
+```bash
+pip install "llmcalibre[schema,nlp,judge]"
+```
+
+## Features
+
+- Normalized `EvalResult` objects with score, pass/fail status, rationale, and metadata.
+- `EvalPipeline` for running multiple evaluators against one output.
+- Heuristic checks for JSON format, length, required/forbidden terms, regex patterns, and JSON Schema.
+- Optional offline NLP metrics for semantic similarity and ROUGE.
+- Optional OpenAI-compatible LLM judge evaluator with graceful failure handling.
+- Stdlib CLI for simple terminal checks.
+- Lightweight pytest assertion helper.
+- No base runtime dependencies.
+
+## Python API
 
 ```python
 from llmcalibre import (
     ContainsChecker,
     EvalPipeline,
     FormatChecker,
-    JsonSchemaChecker,
     LengthConstraint,
-    OpenAIJudge,
     RegexChecker,
-    RougeScore,
-    SemanticSimilarity,
 )
-
-schema = {
-    "type": "object",
-    "required": ["answer"],
-    "properties": {
-        "answer": {"type": "string"},
-    },
-}
 
 pipeline = EvalPipeline(
     [
         FormatChecker(format="json"),
         LengthConstraint(min_chars=2, max_chars=100),
-        ContainsChecker(required=["answer"], forbidden=["markdown"]),
-        RegexChecker(required_patterns=[r'"answer"\s*:'], forbidden_patterns=[r"TODO"]),
-        JsonSchemaChecker(schema=schema),
+        ContainsChecker(required=["answer"], forbidden=["TODO"]),
+        RegexChecker(required_patterns=[r'"answer"\s*:']),
     ]
 )
 
-results = pipeline.run('{"answer": "hello"}')
+results = pipeline.run('{"answer": "Paris"}')
 summary = pipeline.summary(results)
 
 print(results)
 print(summary)
+```
+
+## Optional Evaluators
+
+JSON Schema validation:
+
+```python
+from llmcalibre import JsonSchemaChecker
+
+schema = {
+    "type": "object",
+    "required": ["answer"],
+    "properties": {"answer": {"type": "string"}},
+}
+
+result = JsonSchemaChecker(schema=schema).evaluate('{"answer": "Paris"}')
+print(result)
+```
+
+Offline NLP metrics:
+
+```python
+from llmcalibre import RougeScore, SemanticSimilarity
 
 similarity = SemanticSimilarity(threshold=0.7)
 semantic_result = similarity.evaluate(
     "Paris is the capital of France.",
     reference="France's capital city is Paris.",
 )
-print(semantic_result)
 
 rouge = RougeScore(rouge_type="rougeL", threshold=0.5)
 rouge_result = rouge.evaluate(
     "Paris is the capital of France.",
     reference="The capital of France is Paris.",
 )
-print(rouge_result)
+```
+
+OpenAI-compatible judge:
+
+```python
+from llmcalibre import OpenAIJudge
 
 judge = OpenAIJudge(model="gpt-4o-mini")
-judge_result = judge.evaluate(
+result = judge.evaluate(
     "Paris is the capital of France.",
     prompt="What is the capital of France?",
     reference="Paris",
     criteria="Reward factual correctness and concise answers.",
 )
-print(judge_result)
+print(result)
 ```
 
 ## CLI Usage
@@ -103,6 +130,12 @@ llmcalibre check --output "Paris is in France" --contains Paris --contains Franc
 llmcalibre check --output-file response.txt --min-chars 50 --max-chars 500
 llmcalibre check --output "Date: 2026-06-16" --regex "\\d{4}-\\d{2}-\\d{2}"
 ```
+
+The CLI exits with:
+
+- `0` when all checks pass.
+- `1` when at least one check fails.
+- `2` for usage or configuration errors.
 
 ## Pytest Helper
 
@@ -122,3 +155,7 @@ def test_llm_response():
         ],
     )
 ```
+
+## License
+
+MIT
