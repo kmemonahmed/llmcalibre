@@ -14,16 +14,39 @@ For local development:
 pip install -e ".[dev]"
 ```
 
+For JSON Schema validation support:
+
+```bash
+pip install "llmcalibre[schema]"
+```
+
 ## Quick Example
 
 ```python
-from llmcalibre import ContainsChecker, EvalPipeline, FormatChecker, LengthConstraint
+from llmcalibre import (
+    ContainsChecker,
+    EvalPipeline,
+    FormatChecker,
+    JsonSchemaChecker,
+    LengthConstraint,
+    RegexChecker,
+)
+
+schema = {
+    "type": "object",
+    "required": ["answer"],
+    "properties": {
+        "answer": {"type": "string"},
+    },
+}
 
 pipeline = EvalPipeline(
     [
         FormatChecker(format="json"),
         LengthConstraint(min_chars=2, max_chars=100),
         ContainsChecker(required=["answer"], forbidden=["markdown"]),
+        RegexChecker(required_patterns=[r'"answer"\s*:'], forbidden_patterns=[r"TODO"]),
+        JsonSchemaChecker(schema=schema),
     ]
 )
 
