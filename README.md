@@ -26,6 +26,12 @@ For offline semantic similarity support:
 pip install "llmcalibre[nlp]"
 ```
 
+For OpenAI-compatible judge support:
+
+```bash
+pip install "llmcalibre[judge]"
+```
+
 ## Quick Example
 
 ```python
@@ -35,6 +41,7 @@ from llmcalibre import (
     FormatChecker,
     JsonSchemaChecker,
     LengthConstraint,
+    OpenAIJudge,
     RegexChecker,
     RougeScore,
     SemanticSimilarity,
@@ -77,6 +84,15 @@ rouge_result = rouge.evaluate(
     reference="The capital of France is Paris.",
 )
 print(rouge_result)
+
+judge = OpenAIJudge(model="gpt-4o-mini")
+judge_result = judge.evaluate(
+    "Paris is the capital of France.",
+    prompt="What is the capital of France?",
+    reference="Paris",
+    criteria="Reward factual correctness and concise answers.",
+)
+print(judge_result)
 ```
 
 ## CLI Usage
