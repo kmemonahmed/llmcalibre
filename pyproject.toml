@@ -13,6 +13,9 @@ authors = [
 ]
 dependencies = []
 
+[project.scripts]
+llmcalibre = "llmcalibre.cli:main"
+
 [project.optional-dependencies]
 schema = [
     "jsonschema>=4.0",

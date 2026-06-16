@@ -56,3 +56,12 @@ summary = pipeline.summary(results)
 print(results)
 print(summary)
 ```
+
+## CLI Usage
+
+```bash
+llmcalibre check --output '{"name":"Emon"}' --format json
+llmcalibre check --output "Paris is in France" --contains Paris --contains France
+llmcalibre check --output-file response.txt --min-chars 50 --max-chars 500
+llmcalibre check --output "Date: 2026-06-16" --regex "\\d{4}-\\d{2}-\\d{2}"
+```
