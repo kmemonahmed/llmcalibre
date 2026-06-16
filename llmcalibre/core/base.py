@@ -15,6 +15,8 @@ class BaseEvaluator(ABC):
 
     def __init__(self, threshold: float = 0.5) -> None:
         """Create an evaluator with a pass threshold."""
+        if threshold < 0.0 or threshold > 1.0:
+            raise ValueError("threshold must be between 0.0 and 1.0")
         self.threshold = threshold
 
     @abstractmethod
