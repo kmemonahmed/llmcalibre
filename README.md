@@ -159,3 +159,11 @@ def test_llm_response():
 ## License
 
 MIT
+
+## Release Process
+
+1. Update the version in `pyproject.toml`.
+2. Update `CHANGELOG.md`.
+3. Merge the release changes to `main`.
+4. Create a GitHub Release with a tag like `v0.1.0-alpha.1`.
+5. Publishing to PyPI runs automatically from the release workflow.
