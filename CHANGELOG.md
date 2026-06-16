@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.0
+
+First stable public release of llmcalibre.
+
+### Notes
+
+- Promotes the initial alpha feature set to a stable `0.1.0` release.
+- Keeps the offline-first core, optional extras, CLI, pytest helper, and release automation introduced during the alpha cycle.
+
 ## v0.1.0-alpha.1
 
 Initial alpha release of llmcalibre.

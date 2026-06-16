@@ -4,8 +4,6 @@ llmcalibre is an offline-first, framework-agnostic library for evaluating LLM
 outputs. It starts with deterministic local checks, then lets you opt into
 heavier NLP metrics or OpenAI-compatible judge models only when you need them.
 
-This is an alpha release: APIs are intentionally small, but may still evolve.
-
 ## Installation
 
 Base install, with no runtime dependencies:
