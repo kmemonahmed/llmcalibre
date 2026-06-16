@@ -65,3 +65,22 @@ llmcalibre check --output "Paris is in France" --contains Paris --contains Franc
 llmcalibre check --output-file response.txt --min-chars 50 --max-chars 500
 llmcalibre check --output "Date: 2026-06-16" --regex "\\d{4}-\\d{2}-\\d{2}"
 ```
+
+## Pytest Helper
+
+```python
+from llmcalibre import ContainsChecker, FormatChecker
+from llmcalibre.pytest import assert_eval
+
+
+def test_llm_response():
+    output = '{"city": "Paris", "country": "France"}'
+
+    assert_eval(
+        output,
+        evaluators=[
+            FormatChecker(format="json"),
+            ContainsChecker(required=["Paris", "France"]),
+        ],
+    )
+```
