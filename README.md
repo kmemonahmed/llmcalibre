@@ -36,6 +36,7 @@ from llmcalibre import (
     JsonSchemaChecker,
     LengthConstraint,
     RegexChecker,
+    RougeScore,
     SemanticSimilarity,
 )
 
@@ -69,6 +70,13 @@ semantic_result = similarity.evaluate(
     reference="France's capital city is Paris.",
 )
 print(semantic_result)
+
+rouge = RougeScore(rouge_type="rougeL", threshold=0.5)
+rouge_result = rouge.evaluate(
+    "Paris is the capital of France.",
+    reference="The capital of France is Paris.",
+)
+print(rouge_result)
 ```
 
 ## CLI Usage

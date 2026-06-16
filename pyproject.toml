@@ -21,6 +21,7 @@ schema = [
     "jsonschema>=4.0",
 ]
 nlp = [
+    "rouge-score>=0.1.2",
     "sentence-transformers>=3.0",
 ]
 dev = [
