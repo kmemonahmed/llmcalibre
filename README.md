@@ -161,19 +161,3 @@ def test_llm_response():
 ## License
 
 MIT
-
-## Release Process
-
-1. Update the version in `pyproject.toml`.
-2. Update `CHANGELOG.md`.
-3. Merge the release changes to `main`.
-4. Create a GitHub pre-release with a tag like `v0.1.0-alpha.1`.
-5. The release workflow publishes the package to TestPyPI automatically.
-6. Test install from TestPyPI:
-
-```bash
-pip install --index-url https://test.pypi.org/simple/ llmcalibre
-```
-
-7. Create a normal GitHub Release for the final version.
-8. The release workflow publishes the package to PyPI automatically.
